@@ -15,28 +15,26 @@ exports.load = function(req, res, next, quizId){
 
 
 exports.index = function(req, res){
-	models.Quiz.findAll().then(function(quizzes){
-		res.render('quizzes/index.ejs',{quizzes : quizzes});
-	})
+	
+	var search = req.query.search;
+	console.log("Recibe:"+search);
+	if (search !== undefined){
+		search = search.replace(/[^a-zA-Z0-9@ ]/g,"");
+		console.log("Devuelve:"+search);
+		search = search.replace(" ","%");
+		console.log("Devuelve:"+search);
+		search = "%"+search+"%";
+		console.log("Devuelve:"+search);
+		models.Quiz.findAll({where:["pregunta like ?",search]}).then(function(quizzes){
+			res.render('quizzes/index.ejs',{quizzes : quizzes});
+		});
+	} else{
+		models.Quiz.findAll().then(function(quizzes){
+			res.render('quizzes/index.ejs',{quizzes : quizzes});
+		});
+	}
 }
-/*
-exports.show = function(req, res){
-	models.Quiz.findAll().success(function(quiz){
-		res.render('quizzes/show',{pregunta:'quiz[0].pregunta'});
-	});	
-};
 
-
-exports.answer = function(req, res){
-	models.Quiz.findAll().success(function(quiz){
-		if(req.query.respuesta === quiz[0].respuesta){
-			res.render('quizzes/answer',{title:'Quiz',respuesta:'Correcto'});
-		} else{
-			res.render('quizzes/answer',{title:'Quiz',respuesta:'Incorrecto'});
-		}
-	});
-};
-*/
 exports.show = function(req, res){
 	models.Quiz.findAll().success(function(quiz){
 		console.log('Esto es lo que vale quiz:'+quiz);
