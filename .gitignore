@@ -44,3 +44,6 @@ Temporary Items
 .apdisk
 
 node_modules
+.env
+quiz.slite
+npm.debug.log
